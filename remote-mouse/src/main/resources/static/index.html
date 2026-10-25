@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+  <meta name="theme-color" content="#0a0a0f">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <title>Remote Mouse</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+  <div id="app">
+
+    <!-- ===== Connection Screen ===== -->
+    <div id="connection-screen">
+      <div class="connection-content">
+        <div class="connection-indicator">
+          <div class="spinner"></div>
+          <div class="checkmark hidden">✓</div>
+        </div>
+        <h1 class="connection-title">Remote Mouse</h1>
+        <p id="connection-status-text" class="connection-status">Connecting...</p>
+        <p class="connection-url" id="connection-url"></p>
+      </div>
+    </div>
+
+    <!-- ===== Main Control Screen ===== -->
+    <div id="control-screen" class="hidden">
+
+      <!-- Status Bar -->
+      <div id="status-bar">
+        <div class="status-left">
+          <span id="status-dot" class="status-dot"></span>
+          <span id="status-text" class="status-label">Connecting</span>
+        </div>
+        <span class="status-title">Remote Mouse</span>
+        <button id="btn-settings" class="status-btn" aria-label="Settings">⚙</button>
+      </div>
+
+      <!-- Touchpad Area -->
+      <div id="touchpad">
+        <span class="touchpad-ghost">Swipe to move</span>
+      </div>
+
+      <!-- Mouse Buttons -->
+      <div id="mouse-buttons">
+        <button id="btn-left-click" class="mouse-btn mouse-btn--left">Left Click</button>
+        <button id="btn-right-click" class="mouse-btn mouse-btn--right">Right Click</button>
+      </div>
+
+      <!-- Media Controls -->
+      <div id="media-controls">
+        <button id="btn-prev" class="media-btn" aria-label="Previous">⏮</button>
+        <button id="btn-vol-down" class="media-btn" aria-label="Volume Down">🔉</button>
+        <button id="btn-play-pause" class="media-btn media-btn--play" aria-label="Play/Pause">⏯</button>
+        <button id="btn-vol-up" class="media-btn" aria-label="Volume Up">🔊</button>
+        <button id="btn-next" class="media-btn" aria-label="Next">⏭</button>
+        <button id="btn-mute" class="media-btn" aria-label="Mute">🔇</button>
+      </div>
+
+      <!-- Bottom Toolbar -->
+      <div id="toolbar">
+        <button id="btn-keyboard-toggle" class="toolbar-btn">⌨ Keyboard</button>
+        <button id="btn-scroll-mode" class="toolbar-btn">↕ Scroll</button>
+      </div>
+
+      <!-- Keyboard Panel (slides up) -->
+      <div id="keyboard-panel" class="hidden">
+        <div class="keyboard-header">
+          <span class="keyboard-title">Keyboard</span>
+          <button id="btn-close-keyboard" class="panel-close-btn">✕</button>
+        </div>
+
+        <div class="keyboard-input-row">
+          <input type="text" id="keyboard-input" class="keyboard-input" placeholder="Type here..." autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false">
+        </div>
+
+        <!-- Modifier Keys Row -->
+        <div class="keyboard-row keyboard-row--modifiers">
+          <button class="key-btn key-btn--mod" data-key="ESCAPE">Esc</button>
+          <button class="key-btn key-btn--mod" data-key="TAB">Tab</button>
+          <button class="key-btn key-btn--mod key-btn--toggle" data-key="CTRL">Ctrl</button>
+          <button class="key-btn key-btn--mod key-btn--toggle" data-key="ALT">Alt</button>
+          <button class="key-btn key-btn--mod key-btn--toggle" data-key="META">⌘</button>
+          <button class="key-btn key-btn--mod key-btn--toggle" data-key="SHIFT">⇧</button>
+        </div>
+
+        <!-- Arrow Keys + Action Keys -->
+        <div class="keyboard-row keyboard-row--actions">
+          <div class="arrow-keys">
+            <div class="arrow-keys-top">
+              <button class="key-btn key-btn--arrow" data-key="UP">▲</button>
+            </div>
+            <div class="arrow-keys-bottom">
+              <button class="key-btn key-btn--arrow" data-key="LEFT">◀</button>
+              <button class="key-btn key-btn--arrow" data-key="DOWN">▼</button>
+              <button class="key-btn key-btn--arrow" data-key="RIGHT">▶</button>
+            </div>
+          </div>
+          <div class="action-keys">
+            <button class="key-btn key-btn--action" data-key="ENTER">Enter ↵</button>
+            <button class="key-btn key-btn--action" data-key="BACKSPACE">⌫ Bksp</button>
+            <button class="key-btn key-btn--action" data-key="SPACE">Space</button>
+            <button class="key-btn key-btn--action" data-key="DELETE">Del</button>
+          </div>
+        </div>
+
+        <!-- Function + Extra Keys -->
+        <div class="keyboard-row keyboard-row--extras">
+          <button class="key-btn key-btn--small" data-key="F1">F1</button>
+          <button class="key-btn key-btn--small" data-key="F2">F2</button>
+          <button class="key-btn key-btn--small" data-key="F3">F3</button>
+          <button class="key-btn key-btn--small" data-key="F4">F4</button>
+          <button class="key-btn key-btn--small" data-key="F5">F5</button>
+          <button class="key-btn key-btn--small" data-key="F11">F11</button>
+          <button class="key-btn key-btn--small" data-key="F12">F12</button>
+          <button class="key-btn key-btn--small" data-key="HOME">Home</button>
+          <button class="key-btn key-btn--small" data-key="END">End</button>
+        </div>
+      </div>
+
+      <!-- Settings Panel (slides in from right) -->
+      <div id="settings-panel" class="hidden">
+        <div class="settings-header">
+          <span class="settings-title">Settings</span>
+          <button id="btn-close-settings" class="panel-close-btn">✕</button>
+        </div>
+
+        <div class="settings-group">
+          <label class="settings-label">Sensitivity</label>
+          <div class="settings-slider-row">
+            <input type="range" id="sensitivity-slider" class="settings-slider" min="0.5" max="5.0" step="0.1" value="1.5">
+            <span id="sensitivity-value" class="settings-slider-value">1.5x</span>
+          </div>
+          <div class="settings-slider-labels">
+            <span>Slow</span>
+            <span>Fast</span>
+          </div>
+        </div>
+
+        <div class="settings-group">
+          <label class="settings-label">Connection</label>
+          <div class="settings-info">
+            <div class="settings-info-row">
+              <span class="settings-info-key">Status</span>
+              <span id="settings-conn-status" class="settings-info-val">—</span>
+            </div>
+            <div class="settings-info-row">
+              <span class="settings-info-key">Server</span>
+              <span id="settings-conn-host" class="settings-info-val">—</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="settings-footer">
+          <span class="settings-version">Remote Mouse v1.0</span>
+        </div>
+      </div>
+
+    </div><!-- /control-screen -->
+  </div><!-- /app -->
+
+  <script src="js/connection.js"></script>
+  <script src="js/touchpad.js"></script>
+  <script src="js/keyboard.js"></script>
+  <script src="js/media.js"></script>
+  <script src="js/app.js"></script>
+</body>
+</html>

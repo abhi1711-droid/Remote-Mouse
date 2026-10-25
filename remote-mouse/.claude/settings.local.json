@@ -1,0 +1,15 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(./gradlew build *)",
+      "Bash(./gradlew bootRun)",
+      "Bash(curl -sf http://localhost:8080/api/connection-info)",
+      "Bash(curl -sf http://localhost:8080/ -o /tmp/index.html)",
+      "Read(//tmp/**)",
+      "Bash(curl -sfI http://localhost:8080/api/qr-code)",
+      "Bash(lsof -iTCP:8080 -sTCP:LISTEN)",
+      "Bash(/usr/libexec/ApplicationFirewall/socketfilterfw --getglobalstate)",
+      "Bash(/usr/libexec/ApplicationFirewall/socketfilterfw --getblockall)"
+    ]
+  }
+}

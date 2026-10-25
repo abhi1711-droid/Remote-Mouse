@@ -1,0 +1,957 @@
+/* ========================================
+   Remote Mouse — Premium Dark Theme
+   ======================================== */
+
+/* --- Design Tokens --- */
+:root {
+  --bg-primary: #0a0a0f;
+  --bg-secondary: #12121a;
+  --bg-card: rgba(255, 255, 255, 0.03);
+  --bg-card-hover: rgba(255, 255, 255, 0.06);
+  --bg-glass: rgba(16, 16, 28, 0.85);
+  --accent-primary: #6366f1;
+  --accent-secondary: #8b5cf6;
+  --accent-cyan: #22d3ee;
+  --accent-glow: rgba(99, 102, 241, 0.3);
+  --accent-glow-strong: rgba(99, 102, 241, 0.55);
+  --text-primary: #e2e8f0;
+  --text-secondary: #94a3b8;
+  --text-muted: #475569;
+  --border-color: rgba(255, 255, 255, 0.08);
+  --border-color-strong: rgba(255, 255, 255, 0.14);
+  --success: #22c55e;
+  --success-glow: rgba(34, 197, 94, 0.35);
+  --danger: #ef4444;
+  --radius-sm: 8px;
+  --radius-md: 12px;
+  --radius-lg: 16px;
+  --radius-xl: 24px;
+  --transition-fast: 150ms ease;
+  --transition-normal: 250ms ease;
+  --transition-smooth: 350ms cubic-bezier(0.4, 0, 0.2, 1);
+  --shadow-glow: 0 0 20px var(--accent-glow);
+  --shadow-glow-strong: 0 0 30px var(--accent-glow-strong);
+  --font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+}
+
+/* --- Reset --- */
+*, *::before, *::after {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+html {
+  height: 100%;
+  -webkit-text-size-adjust: 100%;
+}
+
+body {
+  height: 100%;
+  font-family: var(--font-family);
+  background: var(--bg-primary);
+  color: var(--text-primary);
+  overscroll-behavior: none;
+  overflow: hidden;
+  touch-action: manipulation;
+  -webkit-tap-highlight-color: transparent;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+button, input {
+  font-family: inherit;
+  border: none;
+  outline: none;
+  background: none;
+  color: inherit;
+}
+
+button {
+  cursor: pointer;
+  -webkit-user-select: none;
+  user-select: none;
+  touch-action: manipulation;
+}
+
+.hidden {
+  display: none !important;
+}
+
+/* --- Utility: no-select on interactive areas --- */
+#touchpad, #mouse-buttons, #media-controls, #toolbar, #keyboard-panel {
+  -webkit-user-select: none;
+  user-select: none;
+}
+
+
+/* =========================================
+   Connection Screen
+   ========================================= */
+#connection-screen {
+  position: fixed;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--bg-primary);
+  z-index: 100;
+  animation: fadeIn 0.6s ease;
+}
+
+.connection-content {
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 20px;
+}
+
+/* Spinner */
+.connection-indicator {
+  position: relative;
+  width: 80px;
+  height: 80px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.spinner {
+  width: 64px;
+  height: 64px;
+  border-radius: 50%;
+  border: 3px solid rgba(99, 102, 241, 0.15);
+  border-top-color: var(--accent-primary);
+  animation: spin 1s linear infinite;
+}
+
+.checkmark {
+  position: absolute;
+  font-size: 36px;
+  color: var(--success);
+  animation: scaleIn 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+.connection-title {
+  font-size: 28px;
+  font-weight: 700;
+  letter-spacing: -0.5px;
+  background: linear-gradient(135deg, var(--accent-primary), var(--accent-secondary), var(--accent-cyan));
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.connection-status {
+  font-size: 15px;
+  color: var(--text-secondary);
+  font-weight: 400;
+}
+
+.connection-url {
+  font-size: 12px;
+  color: var(--text-muted);
+  font-family: monospace;
+}
+
+
+/* =========================================
+   Control Screen — Layout
+   ========================================= */
+#control-screen {
+  display: flex;
+  flex-direction: column;
+  height: 100dvh;
+  height: 100vh;
+  background: var(--bg-primary);
+  animation: fadeIn 0.4s ease;
+}
+
+
+/* =========================================
+   Status Bar
+   ========================================= */
+#status-bar {
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 10px 16px;
+  background: var(--bg-glass);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border-bottom: 1px solid var(--border-color);
+  z-index: 10;
+}
+
+.status-left {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.status-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--danger);
+  transition: background var(--transition-normal);
+  flex-shrink: 0;
+}
+
+.status-dot.connected {
+  background: var(--success);
+  box-shadow: 0 0 8px var(--success-glow);
+  animation: pulse 2s ease-in-out infinite;
+}
+
+.status-label {
+  font-size: 12px;
+  color: var(--text-muted);
+  font-weight: 500;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.status-title {
+  font-size: 15px;
+  font-weight: 600;
+  color: var(--text-secondary);
+  letter-spacing: -0.3px;
+}
+
+.status-btn {
+  width: 40px;
+  height: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 20px;
+  border-radius: var(--radius-md);
+  transition: background var(--transition-fast);
+}
+
+.status-btn:active {
+  background: var(--bg-card-hover);
+}
+
+
+/* =========================================
+   Touchpad
+   ========================================= */
+#touchpad {
+  flex: 1 1 0;
+  min-height: 0;
+  position: relative;
+  margin: 8px 12px;
+  border-radius: var(--radius-lg);
+  border: 1px solid var(--border-color);
+  background:
+    radial-gradient(circle at center, rgba(99, 102, 241, 0.03) 0%, transparent 70%),
+    repeating-radial-gradient(
+      circle at 0 0,
+      transparent 0,
+      transparent 19px,
+      rgba(255, 255, 255, 0.015) 19px,
+      rgba(255, 255, 255, 0.015) 20px
+    ),
+    var(--bg-secondary);
+  overflow: hidden;
+  transition: border-color var(--transition-normal), background var(--transition-normal);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+#touchpad::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background:
+    repeating-linear-gradient(
+      0deg,
+      transparent,
+      transparent 39px,
+      rgba(255, 255, 255, 0.012) 39px,
+      rgba(255, 255, 255, 0.012) 40px
+    ),
+    repeating-linear-gradient(
+      90deg,
+      transparent,
+      transparent 39px,
+      rgba(255, 255, 255, 0.012) 39px,
+      rgba(255, 255, 255, 0.012) 40px
+    );
+  pointer-events: none;
+}
+
+#touchpad:active {
+  border-color: var(--border-color-strong);
+}
+
+#touchpad.dragging {
+  border-color: var(--accent-primary);
+  box-shadow: inset 0 0 40px rgba(99, 102, 241, 0.05), var(--shadow-glow);
+}
+
+.touchpad-ghost {
+  font-size: 15px;
+  font-weight: 400;
+  color: var(--text-muted);
+  letter-spacing: 0.5px;
+  pointer-events: none;
+  animation: ghostPulse 3s ease-in-out infinite;
+  z-index: 1;
+}
+
+/* Touch ripple */
+.touch-ripple {
+  position: absolute;
+  width: 60px;
+  height: 60px;
+  border-radius: 50%;
+  background: radial-gradient(circle, var(--accent-glow) 0%, transparent 70%);
+  transform: translate(-50%, -50%) scale(0);
+  animation: ripple 0.6s ease-out forwards;
+  pointer-events: none;
+  z-index: 2;
+}
+
+
+/* =========================================
+   Mouse Buttons
+   ========================================= */
+#mouse-buttons {
+  flex-shrink: 0;
+  display: grid;
+  grid-template-columns: 1.3fr 0.7fr;
+  gap: 8px;
+  padding: 0 12px 8px;
+}
+
+.mouse-btn {
+  height: 52px;
+  border-radius: var(--radius-md);
+  font-size: 13px;
+  font-weight: 600;
+  letter-spacing: 0.3px;
+  text-transform: uppercase;
+  background: var(--bg-card);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  border: 1px solid var(--border-color);
+  transition: all var(--transition-fast);
+}
+
+.mouse-btn:active {
+  transform: scale(0.97);
+}
+
+.mouse-btn--left {
+  border-color: rgba(99, 102, 241, 0.25);
+  color: var(--accent-primary);
+}
+.mouse-btn--left:active {
+  background: rgba(99, 102, 241, 0.12);
+  box-shadow: 0 0 20px rgba(99, 102, 241, 0.2);
+}
+
+.mouse-btn--right {
+  border-color: rgba(139, 92, 246, 0.25);
+  color: var(--accent-secondary);
+}
+.mouse-btn--right:active {
+  background: rgba(139, 92, 246, 0.12);
+  box-shadow: 0 0 20px rgba(139, 92, 246, 0.2);
+}
+
+
+/* =========================================
+   Media Controls
+   ========================================= */
+#media-controls {
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  padding: 6px 12px;
+}
+
+.media-btn {
+  width: 46px;
+  height: 46px;
+  border-radius: 50%;
+  font-size: 18px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--bg-card);
+  border: 1px solid var(--border-color);
+  transition: all var(--transition-fast);
+}
+
+.media-btn:active,
+.media-btn.active {
+  transform: scale(0.92);
+  background: var(--bg-card-hover);
+  box-shadow: 0 0 16px var(--accent-glow);
+  border-color: rgba(99, 102, 241, 0.3);
+}
+
+.media-btn--play {
+  width: 54px;
+  height: 54px;
+  font-size: 22px;
+  background: rgba(99, 102, 241, 0.08);
+  border-color: rgba(99, 102, 241, 0.2);
+}
+
+.media-btn--play:active,
+.media-btn--play.active {
+  background: rgba(99, 102, 241, 0.18);
+  box-shadow: var(--shadow-glow);
+}
+
+
+/* =========================================
+   Toolbar
+   ========================================= */
+#toolbar {
+  flex-shrink: 0;
+  display: flex;
+  gap: 8px;
+  padding: 8px 12px;
+  padding-bottom: max(8px, env(safe-area-inset-bottom, 8px));
+  border-top: 1px solid var(--border-color);
+  background: var(--bg-glass);
+}
+
+.toolbar-btn {
+  flex: 1;
+  height: 44px;
+  border-radius: var(--radius-md);
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--text-secondary);
+  background: var(--bg-card);
+  border: 1px solid var(--border-color);
+  transition: all var(--transition-fast);
+}
+
+.toolbar-btn:active,
+.toolbar-btn.active {
+  background: rgba(99, 102, 241, 0.1);
+  border-color: rgba(99, 102, 241, 0.3);
+  color: var(--accent-primary);
+}
+
+
+/* =========================================
+   Keyboard Panel
+   ========================================= */
+#keyboard-panel {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  background: var(--bg-glass);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border-top: 1px solid var(--border-color-strong);
+  padding: 12px;
+  padding-bottom: max(12px, env(safe-area-inset-bottom, 12px));
+  z-index: 50;
+  transform: translateY(100%);
+  transition: transform var(--transition-smooth);
+  border-radius: var(--radius-lg) var(--radius-lg) 0 0;
+}
+
+#keyboard-panel.slide-up {
+  transform: translateY(0);
+}
+
+.keyboard-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 10px;
+}
+
+.keyboard-title {
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--text-secondary);
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+
+.panel-close-btn {
+  width: 36px;
+  height: 36px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  font-size: 16px;
+  color: var(--text-muted);
+  background: var(--bg-card);
+  border: 1px solid var(--border-color);
+  transition: all var(--transition-fast);
+}
+
+.panel-close-btn:active {
+  background: var(--bg-card-hover);
+  color: var(--text-primary);
+}
+
+/* Keyboard input */
+.keyboard-input-row {
+  margin-bottom: 10px;
+}
+
+.keyboard-input {
+  width: 100%;
+  height: 44px;
+  padding: 0 14px;
+  border-radius: var(--radius-md);
+  background: rgba(0, 0, 0, 0.35);
+  border: 1px solid var(--border-color);
+  color: var(--text-primary);
+  font-size: 15px;
+  transition: border-color var(--transition-fast);
+  caret-color: var(--accent-primary);
+}
+
+.keyboard-input::placeholder {
+  color: var(--text-muted);
+}
+
+.keyboard-input:focus {
+  border-color: rgba(99, 102, 241, 0.4);
+  box-shadow: 0 0 12px rgba(99, 102, 241, 0.1);
+}
+
+/* Keyboard rows */
+.keyboard-row {
+  display: flex;
+  gap: 6px;
+  margin-bottom: 8px;
+  flex-wrap: wrap;
+}
+
+.keyboard-row--modifiers {
+  display: grid;
+  grid-template-columns: repeat(6, 1fr);
+}
+
+.keyboard-row--actions {
+  display: flex;
+  gap: 12px;
+}
+
+.keyboard-row--extras {
+  display: grid;
+  grid-template-columns: repeat(9, 1fr);
+  gap: 4px;
+}
+
+/* Key buttons */
+.key-btn {
+  height: 44px;
+  min-width: 44px;
+  border-radius: var(--radius-sm);
+  font-size: 12px;
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--bg-card);
+  border: 1px solid var(--border-color);
+  color: var(--text-secondary);
+  transition: all var(--transition-fast);
+}
+
+.key-btn:active,
+.key-btn.active {
+  transform: scale(0.94);
+  background: rgba(99, 102, 241, 0.15);
+  border-color: rgba(99, 102, 241, 0.3);
+  color: var(--accent-primary);
+}
+
+.key-btn--toggle.modifier-active {
+  background: rgba(99, 102, 241, 0.2);
+  border-color: var(--accent-primary);
+  color: var(--accent-primary);
+  box-shadow: 0 0 12px var(--accent-glow);
+}
+
+.key-btn--mod {
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+/* Arrow keys */
+.arrow-keys {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+  flex-shrink: 0;
+}
+
+.arrow-keys-top {
+  display: flex;
+}
+
+.arrow-keys-bottom {
+  display: flex;
+  gap: 4px;
+}
+
+.key-btn--arrow {
+  width: 48px;
+  height: 40px;
+  font-size: 14px;
+}
+
+/* Action keys */
+.action-keys {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 6px;
+  flex: 1;
+}
+
+.key-btn--action {
+  font-size: 11px;
+  height: 40px;
+}
+
+.key-btn--small {
+  height: 36px;
+  min-width: 0;
+  font-size: 10px;
+  font-weight: 500;
+}
+
+
+/* =========================================
+   Settings Panel
+   ========================================= */
+#settings-panel {
+  position: fixed;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  width: 280px;
+  background: var(--bg-glass);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border-left: 1px solid var(--border-color-strong);
+  padding: 20px;
+  z-index: 60;
+  transform: translateX(100%);
+  transition: transform var(--transition-smooth);
+  display: flex;
+  flex-direction: column;
+}
+
+#settings-panel:not(.hidden) {
+  transform: translateX(0);
+}
+
+.settings-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 32px;
+}
+
+.settings-title {
+  font-size: 18px;
+  font-weight: 700;
+  color: var(--text-primary);
+}
+
+.settings-group {
+  margin-bottom: 28px;
+}
+
+.settings-label {
+  display: block;
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--text-muted);
+  text-transform: uppercase;
+  letter-spacing: 1.2px;
+  margin-bottom: 12px;
+}
+
+.settings-slider-row {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.settings-slider {
+  flex: 1;
+  -webkit-appearance: none;
+  appearance: none;
+  height: 6px;
+  border-radius: 3px;
+  background: rgba(255, 255, 255, 0.08);
+  outline: none;
+}
+
+.settings-slider::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  background: var(--accent-primary);
+  box-shadow: 0 0 10px var(--accent-glow);
+  cursor: pointer;
+  border: 2px solid rgba(255, 255, 255, 0.2);
+  transition: transform var(--transition-fast);
+}
+
+.settings-slider::-webkit-slider-thumb:active {
+  transform: scale(1.2);
+}
+
+.settings-slider::-moz-range-thumb {
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  background: var(--accent-primary);
+  box-shadow: 0 0 10px var(--accent-glow);
+  cursor: pointer;
+  border: 2px solid rgba(255, 255, 255, 0.2);
+}
+
+.settings-slider-value {
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--accent-primary);
+  min-width: 42px;
+  text-align: right;
+}
+
+.settings-slider-labels {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 6px;
+  font-size: 10px;
+  color: var(--text-muted);
+}
+
+.settings-info {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.settings-info-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 8px 12px;
+  border-radius: var(--radius-sm);
+  background: var(--bg-card);
+  border: 1px solid var(--border-color);
+}
+
+.settings-info-key {
+  font-size: 12px;
+  color: var(--text-muted);
+}
+
+.settings-info-val {
+  font-size: 12px;
+  font-weight: 500;
+  color: var(--text-secondary);
+}
+
+.settings-footer {
+  margin-top: auto;
+}
+
+.settings-version {
+  font-size: 11px;
+  color: var(--text-muted);
+}
+
+
+/* =========================================
+   Animations
+   ========================================= */
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
+@keyframes scaleIn {
+  from { transform: scale(0); opacity: 0; }
+  to { transform: scale(1); opacity: 1; }
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes pulse {
+  0%, 100% { opacity: 1; box-shadow: 0 0 8px var(--success-glow); }
+  50% { opacity: 0.6; box-shadow: 0 0 16px var(--success-glow); }
+}
+
+@keyframes ripple {
+  0% {
+    transform: translate(-50%, -50%) scale(0);
+    opacity: 1;
+  }
+  100% {
+    transform: translate(-50%, -50%) scale(3);
+    opacity: 0;
+  }
+}
+
+@keyframes ghostPulse {
+  0%, 100% { opacity: 0.3; }
+  50% { opacity: 0.15; }
+}
+
+
+/* =========================================
+   Settings panel show/hide (override .hidden)
+   We need this because the panel uses transform
+   for its slide animation.
+   ========================================= */
+#settings-panel.hidden {
+  display: flex !important;
+  transform: translateX(100%);
+  pointer-events: none;
+}
+
+#keyboard-panel.hidden {
+  display: flex !important;
+  flex-direction: column;
+  transform: translateY(100%);
+  pointer-events: none;
+}
+
+#keyboard-panel:not(.hidden) {
+  pointer-events: auto;
+  transform: translateY(0);
+}
+
+#settings-panel:not(.hidden) {
+  pointer-events: auto;
+  transform: translateX(0);
+}
+
+
+/* =========================================
+   Landscape Mode
+   ========================================= */
+@media (orientation: landscape) and (max-height: 500px) {
+  #control-screen {
+    flex-direction: row;
+    flex-wrap: wrap;
+  }
+
+  #status-bar {
+    width: 100%;
+    flex-shrink: 0;
+    padding: 6px 16px;
+  }
+
+  #touchpad {
+    flex: 1 1 55%;
+    margin: 4px 6px;
+    min-height: 0;
+  }
+
+  .landscape-sidebar {
+    display: flex;
+    flex-direction: column;
+    flex: 1 1 40%;
+    overflow-y: auto;
+  }
+
+  #mouse-buttons {
+    padding: 4px 6px;
+  }
+
+  .mouse-btn {
+    height: 44px;
+  }
+
+  #media-controls {
+    padding: 4px 6px;
+  }
+
+  .media-btn {
+    width: 40px;
+    height: 40px;
+    font-size: 16px;
+  }
+
+  .media-btn--play {
+    width: 46px;
+    height: 46px;
+    font-size: 18px;
+  }
+
+  #toolbar {
+    padding: 4px 6px;
+  }
+
+  .toolbar-btn {
+    height: 38px;
+    font-size: 12px;
+  }
+}
+
+
+/* =========================================
+   Small screen adjustments
+   ========================================= */
+@media (max-height: 600px) and (orientation: portrait) {
+  #touchpad {
+    margin: 4px 8px;
+  }
+
+  .mouse-btn {
+    height: 44px;
+  }
+
+  #media-controls {
+    padding: 4px 8px;
+    gap: 4px;
+  }
+
+  .media-btn {
+    width: 40px;
+    height: 40px;
+  }
+
+  .media-btn--play {
+    width: 48px;
+    height: 48px;
+  }
+}
+
+
+/* =========================================
+   Safe area for notched phones
+   ========================================= */
+@supports (padding: max(0px)) {
+  #status-bar {
+    padding-top: max(10px, env(safe-area-inset-top));
+  }
+}
